@@ -1,7 +1,6 @@
 package org.himanshu;
 
 import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,7 +16,13 @@ import org.springframework.validation.FieldError;
 public class TrackingNumberController {
 
     private static final Logger logger = LoggerFactory.getLogger(TrackingNumberController.class);
-    @PostMapping("/generateTrackingNumber")
+    private final TrackingNumberService trackingNumberService;
+
+    public TrackingNumberController(TrackingNumberService trackingNumberService) {
+        this.trackingNumberService = trackingNumberService;
+    }
+
+    @GetMapping("/generateTrackingNumber")
     public ResponseEntity<?> generateTrackingNumber(@Valid @RequestBody TrackingNumberRequest request, BindingResult bindingResult ) {
         logger.info("Received request to generateTrackingNumber");
         if (bindingResult.hasErrors()) {
@@ -29,20 +34,14 @@ public class TrackingNumberController {
         }
 
         // Generate the tracking number
-        String trackingNumber = generateTrackingNumber(request);
-        return ResponseEntity.ok(trackingNumber);
-    }
+        String trackingNumber = trackingNumberService.generateTrackingNumber(request);
+        Map<String, Object> response = Map.of(
+                "CustomerName", request.getCustomerName(),
+                "tracking_number", trackingNumber,
+                "created_at", request.getCreatedAt()
+        );
 
-    // Method to generate a unique tracking number
-    private String generateTrackingNumber(TrackingNumberRequest request) {
-        // Generate a unique tracking number (16 chars max, regex ^[A-Z0-9]{1,16}$)
-        logger.info("In generateTrackingNumber method");
-        String variable=request.getOriginCountryId()+request.getDestinationCountryId()+request.getCustomerName().substring(0, 2);
-        logger.info("Variable created: {}",variable);
-        String trackingnumber=variable.toUpperCase()+UUID.randomUUID().toString().replaceAll("-", "").substring(0, 10).toUpperCase();
-        logger.info("Generated TrackingNumber: {}",trackingnumber);
-        return trackingnumber;
-
+        return ResponseEntity.ok(response);
     }
 }
 

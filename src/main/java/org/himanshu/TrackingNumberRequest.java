@@ -18,11 +18,12 @@ public class TrackingNumberRequest {
     private String destinationCountryId;
 
     @NotNull
-    private double weight;
+    @Pattern(regexp = "^\\d*\\.?\\d{0,3}$", message = "Weight should be up to three decimal places")
+    private String weight;
 
     @NotNull(message = "Timestamp cannot be null")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    private OffsetDateTime timestamp;
+    private OffsetDateTime createdAt;
 
     @NotNull(message = "Customer ID cannot be null")
     private UUID customerId;
@@ -32,7 +33,7 @@ public class TrackingNumberRequest {
     private String customerName;
 
     @NotNull(message = "Customer name cannot be null")
-    @Size(min=1,max=100,message = "Customer name must be between 1 and 100")
+    @Size(min=1,max=100,message = "Customer Slug must be between 1 and 100")
     private String customerSlug;
 
     // Getters and Setters
@@ -51,20 +52,20 @@ public class TrackingNumberRequest {
         this.destinationCountryId = destinationCountryId;
     }
 
-    public double getWeight() {
+    public String getWeight() {
         return weight;
     }
 
-    public void setWeight(double weight) {
+    public void setWeight(String weight) {
         this.weight = weight;
     }
 
-    public OffsetDateTime getTimestamp() {
-        return timestamp;
+    public OffsetDateTime getCreatedAt() {
+        return createdAt;
     }
 
-    public void setTimestamp(OffsetDateTime timestamp) {
-        this.timestamp = timestamp;
+    public void setCreatedAt(OffsetDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 
     public UUID getCustomerId() {
