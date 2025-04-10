@@ -22,7 +22,7 @@ public class TrackingNumberController {
         this.trackingNumberService = trackingNumberService;
     }
 
-    @GetMapping("/generateTrackingNumber")
+    @PostMapping("/generateTrackingNumber")
     public ResponseEntity<?> generateTrackingNumber(@Valid @RequestBody TrackingNumberRequest request, BindingResult bindingResult ) {
         logger.info("Received request to generateTrackingNumber");
         if (bindingResult.hasErrors()) {
